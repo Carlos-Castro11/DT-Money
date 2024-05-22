@@ -6,7 +6,6 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
@@ -15,6 +14,7 @@ export const GlobalStyle = createGlobalStyle`
 body {
     background-color: ${(props) => props.theme["gray-800"]};
     color: ${(props) => props.theme["gray-100"]};
+    -webkit-font-smoothing: antialiased;
 }
 
 body, input, textarea, button {
