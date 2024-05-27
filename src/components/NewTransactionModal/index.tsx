@@ -1,23 +1,23 @@
-import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react';
-import * as S from './styles';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as z from 'zod';
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
-import { TransactionsContext } from '../../contexts/TransactionsContext';
+import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
+import * as S from './styles'
+import * as Dialog from '@radix-ui/react-dialog'
+import * as z from 'zod'
+import { Controller, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import React from 'react'
+import { TransactionsContext } from '../../contexts/TransactionsContext'
 
 const newTransactionFormSchema = z.object({
   description: z.string(),
   price: z.number(),
   category: z.string(),
   type: z.enum(['income', 'outcome']),
-});
+})
 
-type newTransactionFormInputs = z.infer<typeof newTransactionFormSchema>;
+type newTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 export function NewTransactionModal() {
-  const { createTransaction } = React.useContext(TransactionsContext);
+  const { createTransaction } = React.useContext(TransactionsContext)
 
   const {
     control,
@@ -27,19 +27,19 @@ export function NewTransactionModal() {
     reset,
   } = useForm<newTransactionFormInputs>({
     resolver: zodResolver(newTransactionFormSchema),
-  });
+  })
 
   async function handleCreateNewTransaction(data: newTransactionFormInputs) {
-    const { description, category, price, type } = data;
+    const { description, category, price, type } = data
 
     await createTransaction({
       description,
       category,
       price,
       type,
-    });
+    })
 
-    reset();
+    reset()
   }
 
   return (
@@ -54,50 +54,50 @@ export function NewTransactionModal() {
         <form onSubmit={handleSubmit(handleCreateNewTransaction)}>
           <input
             {...register('description')}
-            type='text'
-            placeholder='Descrição'
+            type="text"
+            placeholder="Descrição"
             required
           />
           <input
             {...register('price', { valueAsNumber: true })}
-            type='number'
-            placeholder='Preço'
+            type="number"
+            placeholder="Preço"
             required
           />
           <input
             {...register('category')}
-            type='text'
-            placeholder='Categoria'
+            type="text"
+            placeholder="Categoria"
             required
           />
 
           <Controller
             control={control}
-            name='type'
+            name="type"
             render={({ field }) => {
               return (
                 <S.TransactionType
                   onValueChange={field.onChange}
                   value={field.value}
                 >
-                  <S.TransactionTypeButton variant='income' value='income'>
+                  <S.TransactionTypeButton variant="income" value="income">
                     <ArrowCircleUp size={24} />
                     Entrada
                   </S.TransactionTypeButton>
-                  <S.TransactionTypeButton variant='outcome' value='outcome'>
+                  <S.TransactionTypeButton variant="outcome" value="outcome">
                     <ArrowCircleDown size={24} />
                     Saída
                   </S.TransactionTypeButton>
                 </S.TransactionType>
-              );
+              )
             }}
           />
 
-          <button disabled={isSubmitting} type='submit'>
+          <button disabled={isSubmitting} type="submit">
             Cadastrar
           </button>
         </form>
       </S.Content>
     </Dialog.Portal>
-  );
+  )
 }
