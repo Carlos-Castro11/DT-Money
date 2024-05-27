@@ -27,7 +27,6 @@ export function Transactions() {
     <div>
       <Header />
       <Summary />
-
       <S.TransactionsContainer>
         <SearchForm setSearchTransactions={setSearchTransactions} />
         <S.TransactionsTable>

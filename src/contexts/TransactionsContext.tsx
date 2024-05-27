@@ -1,4 +1,5 @@
 import React from 'react';
+import { api } from '../lib/axios';
 
 export interface Transaction {
   id: number;
@@ -8,10 +9,16 @@ export interface Transaction {
   category: string;
   createdAt: string;
 }
+interface CreateTransactionInput {
+  description: string;
+  price: number;
+  category: string;
+  type: 'income' | 'outcome';
+}
 
 interface TransactionsContextType {
   transactions: Transaction[];
-  fetchTransactions: (query?: string) => Promise<void>;
+  createTransaction: (data: CreateTransactionInput) => Promise<void>;
 }
 
 export const TransactionsContext = React.createContext(
@@ -25,17 +32,23 @@ interface TransactionsProviderProps {
 export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = React.useState<Transaction[]>([]);
 
-  async function fetchTransactions(query?: string) {
-    const url = new URL('http://localhost:3333/transactions');
+  async function fetchTransactions() {
+    const allTransactions = await api.get('transactions');
+    setTransactions(allTransactions.data);
+  }
 
-    if (query) {
-      url.searchParams.append('q', query);
-    }
+  async function createTransaction(data: CreateTransactionInput) {
+    const { description, category, price, type } = data;
 
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    setTransactions(data);
+    const newTransaction = await api.post('transactions', {
+      description,
+      category,
+      price,
+      type,
+      createdAt: new Date(),
+    });
+
+    setTransactions((prevState) => [newTransaction.data, ...prevState]);
   }
 
   React.useEffect(() => {
@@ -43,7 +56,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   }, []);
 
   return (
-    <TransactionsContext.Provider value={{ transactions, fetchTransactions }}>
+    <TransactionsContext.Provider value={{ transactions, createTransaction }}>
       {children}
     </TransactionsContext.Provider>
   );
